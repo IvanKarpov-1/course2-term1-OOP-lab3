@@ -1,6 +1,7 @@
-﻿using System;
+﻿using BLL;
+using Exceptions;
+using System;
 using System.Linq;
-using BLL;
 
 namespace PL
 {
@@ -19,7 +20,7 @@ namespace PL
 
         public void MainMenu()
         {
-            ConsoleWorker.WriteItem("Виберіть тип сериалізації");
+            ConsoleWorker.WriteItem("Виберіть тип серіалізації");
             InputDataHandler.SetSerializationType(_serializationService);
             InputDataHandler.SetPath(_serializationService);
             InputDataHandler.SetFileName(_serializationService);
@@ -147,18 +148,17 @@ namespace PL
 
                         var options = new SearchOptions(firstName, lastName, studentId, numberOfScorebook, course, country);
 
-                        var searchResult = _entityService.Find(options);
-
-                        if (searchResult != null)
+                        try
                         {
+                            var searchResult = _entityService.Find(options);
                             _entityService.Remove(searchResult);
                             ConsoleWorker.WriteItem("Студента видалено.", foregroundColor: ConsoleColor.DarkCyan);
                         }
-                        else
+                        catch (StudentNotFountException)
                         {
                             ConsoleWorker.WriteItem("Збігів для видалення не знайдено.", foregroundColor: ConsoleColor.DarkCyan);
                         }
-                         
+
                         ConsoleWorker.NewLine();
 
                         break;
@@ -167,10 +167,9 @@ namespace PL
                     {
                         ConsoleWorker.Clear();
 
-                        var students = _entityService.Persons.GetData();
-
-                        if (students.Count != 0)
+                        try
                         {
+                            var students = _entityService.Persons.GetData();
                             var i = 1;
                             foreach (var student in students)
                             {
@@ -178,11 +177,11 @@ namespace PL
                                 i++;
                             }
                         }
-                        else
+                        catch (StudentNotFountException)
                         {
-                            ConsoleWorker.WriteItem("Список порожній", foregroundColor: ConsoleColor.Green);
+                            ConsoleWorker.WriteItem("Список порожній.", foregroundColor: ConsoleColor.DarkCyan);
                         }
-                        
+
                         ConsoleWorker.NewLine();
 
                         break;
@@ -204,7 +203,16 @@ namespace PL
                         var options = new SearchOptions(firstName, lastName, studentId, numberOfScorebook, course, country);
 
                         ConsoleWorker.NewLine();
-                        ConsoleWorker.WriteItem(_entityService.Find(options) ?? (object)"Студента не знайдено", foregroundColor: ConsoleColor.Green);
+
+                        try
+                        {
+                            ConsoleWorker.WriteItem(_entityService.Find(options), foregroundColor: ConsoleColor.Green);
+                        }
+                        catch (StudentNotFountException)
+                        {
+                            ConsoleWorker.WriteItem("Студента не знайдено.", foregroundColor: ConsoleColor.Green);
+                        }
+
                         ConsoleWorker.NewLine();
 
                         break;
@@ -216,9 +224,9 @@ namespace PL
                         var options1 = new SearchOptions(course: "3", country: "Ukraine");
                         var options2 = new SearchOptions(course: "3", country: "Україна");
 
-                        var searchResult = _entityService.FindAll(options1).Concat(_entityService.FindAll(options2)).ToList();
-                        if (searchResult.Count > 0)
+                        try
                         {
+                            var searchResult = _entityService.FindAll(options1).Concat(_entityService.FindAll(options2)).ToList();
                             ConsoleWorker.WriteItem($"Студентів третього курсу, що проживають в Україні - {searchResult.Count}:");
                             var i = 1;
                             foreach (var student in searchResult)
@@ -227,9 +235,9 @@ namespace PL
                                 i++;
                             }
                         }
-                        else
+                        catch (StudentNotFountException)
                         {
-                            ConsoleWorker.WriteItem("Збігів не знайдено.", foregroundColor: ConsoleColor.DarkCyan);
+                            ConsoleWorker.WriteItem("Збігів не знайдено.", foregroundColor: ConsoleColor.Green);
                         }
                         
                         ConsoleWorker.NewLine();
@@ -256,7 +264,7 @@ namespace PL
                         }
                         catch (Exception exception)
                         {
-                            ConsoleWorker.WriteItem(exception, foregroundColor: ConsoleColor.DarkRed);
+                            ConsoleWorker.WriteItem(exception.Message, foregroundColor: ConsoleColor.DarkRed);
                         }
                             
                         ConsoleWorker.NewLine();
@@ -273,7 +281,7 @@ namespace PL
                         }
                         catch (Exception exception)
                         {
-                            ConsoleWorker.WriteItem(exception, foregroundColor: ConsoleColor.DarkRed);
+                            ConsoleWorker.WriteItem(exception.Message, foregroundColor: ConsoleColor.DarkRed);
                         }
                             
                         ConsoleWorker.NewLine();
@@ -346,14 +354,13 @@ namespace PL
 
                         var options = new SearchOptions(firstName, lastName, salary: salary, countOfSubordinatesntOf: countOfSubordinates);
 
-                        var searchResult = _entityService.Find(options);
-
-                        if (searchResult != null)
+                        try
                         {
+                            var searchResult = _entityService.Find(options);
                             _entityService.Remove(searchResult);
                             ConsoleWorker.WriteItem("Менеджера видалено.", foregroundColor: ConsoleColor.DarkCyan);
                         }
-                        else
+                        catch (ManagerNotFoundException)
                         {
                             ConsoleWorker.WriteItem("Збігів для видалення не знайдено.", foregroundColor: ConsoleColor.DarkCyan);
                         }
@@ -366,10 +373,9 @@ namespace PL
                     {
                         ConsoleWorker.Clear();
 
-                        var managers = _entityService.Persons.GetData();
-
-                        if (managers.Count != 0)
+                        try
                         {
+                            var managers = _entityService.Persons.GetData();
                             var i = 1;
                             foreach (var person in managers)
                             {
@@ -377,9 +383,9 @@ namespace PL
                                 i++;
                             }
                         }
-                        else
+                        catch (ManagerNotFoundException)
                         {
-                            ConsoleWorker.WriteItem("Список порожній", foregroundColor: ConsoleColor.Green);
+                            ConsoleWorker.WriteItem("Список порожній.", foregroundColor: ConsoleColor.Green);
                         }
 
                         ConsoleWorker.NewLine();
@@ -401,7 +407,15 @@ namespace PL
                         var options = new SearchOptions(firstName, lastName, salary: salary, countOfSubordinatesntOf: countOfSubordinates);
 
                         ConsoleWorker.NewLine();
-                        ConsoleWorker.WriteItem(_entityService.Find(options) ?? (object)"Студента не знайдено", foregroundColor: ConsoleColor.Green);
+                        try
+                        {
+                            ConsoleWorker.WriteItem(_entityService.Find(options), foregroundColor: ConsoleColor.Green);
+                        }
+                        catch (ManagerNotFoundException)
+                        {
+                            ConsoleWorker.WriteItem("Студента не знайдено.", foregroundColor: ConsoleColor.Green);
+                        }
+
                         ConsoleWorker.NewLine();
 
                         break;
@@ -516,14 +530,13 @@ namespace PL
 
                         var options = new SearchOptions(firstName, lastName, salary: salary, diploma: diploma);
 
-                        var searchResult = _entityService.Find(options);
-
-                        if (searchResult != null)
+                        try
                         {
+                            var searchResult = _entityService.Find(options);
                             _entityService.Remove(searchResult);
                             ConsoleWorker.WriteItem("Працівника МакДональдсу видалено.", foregroundColor: ConsoleColor.DarkCyan);
                         }
-                        else
+                        catch (McdonaldsWorkerNotFoundException)
                         {
                             ConsoleWorker.WriteItem("Збігів для видалення не знайдено.", foregroundColor: ConsoleColor.DarkCyan);
                         }
@@ -536,10 +549,9 @@ namespace PL
                     {
                         ConsoleWorker.Clear();
 
-                        var mcdonaldsWorkers = _entityService.Persons.GetData();
-
-                        if (mcdonaldsWorkers.Count != 0)
+                        try
                         {
+                            var mcdonaldsWorkers = _entityService.Persons.GetData();
                             var i = 1;
                             foreach (var person in mcdonaldsWorkers)
                             {
@@ -547,7 +559,7 @@ namespace PL
                                 i++;
                             }
                         }
-                        else
+                        catch (McdonaldsWorkerNotFoundException)
                         {
                             ConsoleWorker.WriteItem("Список порожній", foregroundColor: ConsoleColor.Green);
                         }
@@ -571,7 +583,16 @@ namespace PL
                         var options = new SearchOptions(firstName, lastName, salary: salary, diploma: diploma);
 
                         ConsoleWorker.NewLine();
-                        ConsoleWorker.WriteItem(_entityService.Find(options) ?? (object)"Студента не знайдено", foregroundColor: ConsoleColor.Green);
+
+                        try
+                        {
+                            ConsoleWorker.WriteItem(_entityService.Find(options), foregroundColor: ConsoleColor.Green);
+                        }
+                        catch (McdonaldsWorkerNotFoundException)
+                        {
+                            ConsoleWorker.WriteItem("Працівника не знайдено.", foregroundColor: ConsoleColor.Green);
+                        }
+
                         ConsoleWorker.NewLine();
 
                         break;

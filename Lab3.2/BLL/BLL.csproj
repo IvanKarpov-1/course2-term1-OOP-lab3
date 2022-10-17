@@ -87,6 +87,10 @@
       <Project>{7f4a6182-7efe-4f71-8b0f-698368057c15}</Project>
       <Name>DataProviderContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Exceptions\Exceptions.csproj">
+      <Project>{F6BBF575-2B98-4C90-8B78-48245372861B}</Project>
+      <Name>Exceptions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JsonProvider\JsonProvider.csproj">
       <Project>{8238DE6C-A44D-4997-97AD-2A53AFD0E3B1}</Project>
       <Name>JsonProvider</Name>

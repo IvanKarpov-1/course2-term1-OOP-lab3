@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Exceptions;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BLL
@@ -14,24 +15,29 @@ namespace BLL
 
         public CurrentPerson Find(SearchOptions options)
         {
-            return _mcdonaldsWorkers.Find(x => x.FirstName.Contains(options.FirstName) &&
+            var result = _mcdonaldsWorkers.Find(x => x.FirstName.Contains(options.FirstName) &&
                                                x.LastName.Contains(options.LastName) &&
                                                x.Salary.Contains(options.Salary) &&
                                                x.Diploma.ToString().Contains(options.Diploma.ToString()));
+            if (result == null) throw new McdonaldsWorkerNotFoundException();
+            return result;
         }
 
         public List<CurrentPerson> FindAll(SearchOptions options)
         {
-            return _mcdonaldsWorkers.FindAll(x => x.FirstName.Contains(options.FirstName) &&
+            var result = _mcdonaldsWorkers.FindAll(x => x.FirstName.Contains(options.FirstName) &&
                                                   x.LastName.Contains(options.LastName) &&
                                                   x.Salary.Contains(options.Salary) &&
                                                   x.Diploma.ToString().Contains(options.Diploma.ToString()))
                 .Cast<CurrentPerson>().ToList();
+            if (result.Count == 0) throw new McdonaldsWorkerNotFoundException();
+            return result;
         }
 
         public void Remove(CurrentPerson mcdonaldsWorker)
         {
-            _mcdonaldsWorkers.Remove((CurrentMcdonaldsWorker)mcdonaldsWorker);
+            var result = _mcdonaldsWorkers.Remove((CurrentMcdonaldsWorker)mcdonaldsWorker);
+            if (result == false) throw new McdonaldsWorkerNotFoundException();
         }
 
         public void Clear()
@@ -41,7 +47,9 @@ namespace BLL
 
         public List<CurrentPerson> GetData()
         {
-            return _mcdonaldsWorkers.Cast<CurrentPerson>().ToList();
+            var result = _mcdonaldsWorkers.Cast<CurrentPerson>().ToList();
+            if (_mcdonaldsWorkers.Count == 0) throw new McdonaldsWorkerNotFoundException();
+            return result;
         }
     }
 }

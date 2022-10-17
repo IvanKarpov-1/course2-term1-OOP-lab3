@@ -20,7 +20,6 @@ namespace PL
         }
 
         public static void NewLine() => Console.WriteLine();
-        public static ConsoleKeyInfo ReadKey() => Console.ReadKey();
 
         public static string ReadItem(bool newLine = false, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black)
         {

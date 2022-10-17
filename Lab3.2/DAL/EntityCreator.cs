@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace DAL
+﻿namespace DAL
 {
     public static class EntityCreator
     {

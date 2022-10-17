@@ -20,7 +20,7 @@ namespace XMLDataProvider
                 }
                 catch (Exception exception)
                 {
-                    throw exception;
+                    throw new Exception(exception.Message);
                 }
             }
         }
@@ -37,7 +37,7 @@ namespace XMLDataProvider
                 }
                 catch (Exception exception)
                 {
-                    throw exception;
+                    throw new Exception(exception.Message);
                 }
             }
             return data;

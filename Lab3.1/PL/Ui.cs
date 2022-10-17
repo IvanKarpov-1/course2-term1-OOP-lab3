@@ -1,6 +1,5 @@
 ﻿using BLL;
 using System;
-using System.Net.Mime;
 
 namespace PL
 {
@@ -31,7 +30,7 @@ namespace PL
                     }
                     case "2":
                     {
-                        ShowDefore();
+                        ShowBefore();
                         break;
                     }
                     case "3":
@@ -114,13 +113,12 @@ namespace PL
             Console.WriteLine("Введіть кількість прямокутників для додавання: (Enter для додавання лише одного)");
             var count = Console.ReadLine();
             var checker = new RegexChecker(count, @"(^[1-9]{1}[0-9]*$)|(^$|\s+/)");
-            Console.WriteLine(checker.Check());
             var result = checker.Check();
             EntityService.AddRectangles(result != string.Empty ? int.Parse(result) : 1);
             Console.WriteLine();
         }
 
-        private void ShowDefore()
+        private void ShowBefore()
         {
             foreach (var rectangle in EntityService.GetRectanglesArrayBefore())
             {
